@@ -7,8 +7,11 @@ public class Calculate : MonoBehaviour
 {
     public TMP_InputField[] inputFields;
     public TMP_InputField cashDesk;
-    private TextMeshProUGUI _summ;
-    private GameObject _clear;
+    public TextMeshProUGUI result;
+    public Button clearButton;
+    public Button calculateCash;
+    public GameObject resultPopUp;
+
     private float[] _multipliers;
     private float _sum;
     private float _cashDeskValue;
@@ -18,12 +21,14 @@ public class Calculate : MonoBehaviour
         _multipliers = new float[inputFields.Length];
         for (var i = 0; i < inputFields.Length; i++)
         {
-            var placeholderText = inputFields[i].text;
-            float.TryParse(placeholderText, out _multipliers[i]);
+            float.TryParse(inputFields[i].placeholder.GetComponent<TextMeshProUGUI>().text, NumberStyles.Float, CultureInfo.InvariantCulture, out _multipliers[i]);
         }
+
+        result.text = "";
+        
         // ReSharper disable once Unity.NoNullPropagation
-        _clear?.GetComponent<Button>()?.onClick.AddListener(ClearInput);
-        _summ = GameObject.Find("Sum Text").GetComponent<TextMeshProUGUI>();
+        calculateCash?.GetComponent<Button>()?.onClick.AddListener(CalculateCash);
+        clearButton.onClick.AddListener(ClearInput);
     }
 
     private void Update()
@@ -31,14 +36,26 @@ public class Calculate : MonoBehaviour
         _sum = 0;
         for (var i = 0; i < inputFields.Length; i++)
         {
-            if (!float.TryParse(inputFields[i].text, out var value)) continue;
-            var multiplier = _multipliers[i];
-            _sum += value * multiplier;
+            if (float.TryParse(inputFields[i].text, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+            {
+                _sum += value * _multipliers[i];
+            }
         }
 
-        float.TryParse(cashDesk.text, out _cashDeskValue);
-        _summ.text = _sum.ToString(CultureInfo.InvariantCulture);
-        // _summ.text = (_cashDeskValue - _sum).ToString(CultureInfo.CurrentCulture);
+        float.TryParse(cashDesk.text, NumberStyles.Float, CultureInfo.InvariantCulture, out _cashDeskValue);
+
+        if (_sum > _cashDeskValue)
+        {
+            result.text = "В касі плюс: " + (_sum - _cashDeskValue).ToString(CultureInfo.CurrentCulture);
+        }
+        else if (_sum < _cashDeskValue)
+        {
+            result.text = "В касі мінус: " + (_sum - _cashDeskValue).ToString(CultureInfo.CurrentCulture);
+        }
+        else
+        {
+            result.text = "Каса зійшлась";
+        }
     }
 
     private void ClearInput()
@@ -48,5 +65,13 @@ public class Calculate : MonoBehaviour
         {
             inputField.text = "";
         }
+
+        result.text = "";
+    }
+
+    private void CalculateCash()
+    {
+        Update();
+        resultPopUp.SetActive(true);
     }
 }

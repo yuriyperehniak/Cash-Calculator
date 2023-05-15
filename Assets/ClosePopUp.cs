@@ -1,18 +1,24 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ClosePopUp : MonoBehaviour
 {
-    public Button close;
-    public GameObject resultPopUp;
-
-    private void Start()
+    private void Update()
     {
-        // ReSharper disable once Unity.NoNullPropagation
-        close?.GetComponent<Button>()?.onClick.AddListener(CalculateCash);
+        if (Input.touchCount <= 0) return;
+        foreach (var touch in Input.touches)
+        {
+            if (touch.phase != TouchPhase.Began) continue;
+            if (!IsTouchOverPanel(touch.position))
+            {
+                gameObject.SetActive(false);
+            }
+        }
     }
-    private void CalculateCash()
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private bool IsTouchOverPanel(Vector2 touchPosition)
     {
-        resultPopUp.SetActive(false);
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        return RectTransformUtility.RectangleContainsScreenPoint(rectTransform, touchPosition);
     }
 }

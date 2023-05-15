@@ -17,7 +17,7 @@ public class SaveInputData : MonoBehaviour
         clearButton.onClick.AddListener(ClearInputData);
     }
 
-    private void OnApplicationQuit()
+    private void Update()
     {
         SaveData();
     }

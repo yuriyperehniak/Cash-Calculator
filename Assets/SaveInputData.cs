@@ -69,5 +69,7 @@ public class SaveInputData : MonoBehaviour
             PlayerPrefs.DeleteKey(_inputFieldKeys[i]);
             inputFields[i].text = "";
         }
+
+        сonfirmationPopUp.SetActive(false);
     }
 }

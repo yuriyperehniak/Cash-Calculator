@@ -6,6 +6,9 @@ public class SaveInputData : MonoBehaviour
 {
     public TMP_InputField[] inputFields;
     public Button clearButton;
+    public Button yes;
+    public Button no;
+    public GameObject сonfirmationPopUp;
     
     private string[] _inputFieldKeys;
 
@@ -14,7 +17,9 @@ public class SaveInputData : MonoBehaviour
         InitializeInputFieldKeys();
         LoadInputData();
 
-        clearButton.onClick.AddListener(ClearInputData);
+        clearButton.onClick.AddListener(SetActive);
+        yes.onClick.AddListener(ClearInputData);
+        no.onClick.AddListener(SetActive);
     }
 
     private void Update()
@@ -22,6 +27,11 @@ public class SaveInputData : MonoBehaviour
         SaveData();
     }
 
+    private void SetActive()
+    {
+        сonfirmationPopUp.SetActive(!сonfirmationPopUp.activeSelf);
+    }
+    
     private void InitializeInputFieldKeys()
     {
         _inputFieldKeys = new string[inputFields.Length];

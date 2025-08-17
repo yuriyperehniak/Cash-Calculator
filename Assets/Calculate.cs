@@ -24,9 +24,31 @@ public class Calculate : MonoBehaviour
         _resultPannel = resultPopUp.GetComponent<Image>();
         _multipliers = new float[inputFields.Length];
         for (var i = 0; i < inputFields.Length; i++)
+{
+    TextMeshProUGUI placeholderText = null;
+
+    // шукаємо TextMeshProUGUI в глибоких дочірніх об'єктах
+    var tmps = inputFields[i].GetComponentsInChildren<TextMeshProUGUI>(true);
+    foreach (var tmp in tmps)
+    {
+        if (tmp.gameObject.name.ToLower().Contains("placeholder"))
         {
-            float.TryParse(inputFields[i].placeholder.GetComponent<TextMeshProUGUI>().text, NumberStyles.Float, CultureInfo.InvariantCulture, out _multipliers[i]);
+            placeholderText = tmp;
+            break;
         }
+    }
+
+    if (placeholderText != null)
+    {
+        float.TryParse(placeholderText.text, NumberStyles.Float, CultureInfo.InvariantCulture, out _multipliers[i]);
+    }
+    else
+    {
+        Debug.LogWarning($"InputField {inputFields[i].name} placeholder не знайдено!");
+        _multipliers[i] = 0f;
+    }
+}
+
 
         
         // ReSharper disable once Unity.NoNullPropagation

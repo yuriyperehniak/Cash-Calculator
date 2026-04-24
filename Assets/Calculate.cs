@@ -9,7 +9,7 @@ public class Calculate : MonoBehaviour
     public TMP_InputField cashDesk;
     public TextMeshProUGUI cash;
     public TextMeshProUGUI sum;
-    public TextMeshProUGUI result;    
+    public TextMeshProUGUI result;
     public Button clearButton;
     public Button calculateCash;
     public GameObject resultPopUp;
@@ -24,33 +24,33 @@ public class Calculate : MonoBehaviour
         _resultPannel = resultPopUp.GetComponent<Image>();
         _multipliers = new float[inputFields.Length];
         for (var i = 0; i < inputFields.Length; i++)
-{
-    TextMeshProUGUI placeholderText = null;
-
-    // шукаємо TextMeshProUGUI в глибоких дочірніх об'єктах
-    var tmps = inputFields[i].GetComponentsInChildren<TextMeshProUGUI>(true);
-    foreach (var tmp in tmps)
-    {
-        if (tmp.gameObject.name.ToLower().Contains("placeholder"))
         {
-            placeholderText = tmp;
-            break;
+            TextMeshProUGUI placeholderText = null;
+
+            // шукаємо TextMeshProUGUI в глибоких дочірніх об'єктах
+            var tmps = inputFields[i].GetComponentsInChildren<TextMeshProUGUI>(true);
+            foreach (var tmp in tmps)
+            {
+                if (tmp.gameObject.name.ToLower().Contains("placeholder"))
+                {
+                    placeholderText = tmp;
+                    break;
+                }
+            }
+
+            if (placeholderText != null)
+            {
+                float.TryParse(placeholderText.text, NumberStyles.Float, CultureInfo.InvariantCulture,
+                    out _multipliers[i]);
+            }
+            else
+            {
+                Debug.LogWarning($"InputField {inputFields[i].name} placeholder не знайдено!");
+                _multipliers[i] = 0f;
+            }
         }
-    }
-
-    if (placeholderText != null)
-    {
-        float.TryParse(placeholderText.text, NumberStyles.Float, CultureInfo.InvariantCulture, out _multipliers[i]);
-    }
-    else
-    {
-        Debug.LogWarning($"InputField {inputFields[i].name} placeholder не знайдено!");
-        _multipliers[i] = 0f;
-    }
-}
 
 
-        
         // ReSharper disable once Unity.NoNullPropagation
         calculateCash?.GetComponent<Button>()?.onClick.AddListener(CalculateCash);
         clearButton.onClick.AddListener(ClearInput);
@@ -68,7 +68,7 @@ public class Calculate : MonoBehaviour
         }
 
         float.TryParse(cashDesk.text, NumberStyles.Float, CultureInfo.InvariantCulture, out _cashDeskValue);
-        
+
         cash.text = "Має бути: " + _cashDeskValue.ToString(CultureInfo.CurrentCulture);
         sum.text = "Наявно: " + _sum.ToString(CultureInfo.CurrentCulture);
 
